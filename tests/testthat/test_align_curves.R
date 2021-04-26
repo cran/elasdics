@@ -32,7 +32,8 @@ test_that("input checking closed curves", {
                "Curve is not closed")
   data_curve$t <- NULL
   data_curve[nrow(data_curve),] <- data_curve[1,] + .Machine$double.eps
-  expect_equal(align_curves(data_curve, data_curve, closed = TRUE)$elastic_dist, 0)
+  expect_equal(align_curves(data_curve, data_curve, closed = TRUE)$elastic_dist, 0,
+               tolerance = 10^-4)
 })
 
 test_that("it doesn't matter which coloum t is", {
@@ -46,10 +47,10 @@ test_that("curves get closed", {
   data_curve2 <- rbind(data_curve1, data_curve1[1,])
   data_curve2$t <- 0:5/5
   dist <- align_curves(data_curve1, data_curve2, closed = TRUE)$elastic_dist
-  expect_equal(dist, 0)
+  expect_equal(dist, 0, tolerance = 10^-4)
   data_curve1$t <- 0:4/5
   dist <- align_curves(data_curve1, data_curve2, closed = TRUE)$elastic_dist
-  expect_equal(dist, 0)
+  expect_equal(dist, 0, tolerance = 10^-4)
 })
 
 test_that("more complicated open curves", {

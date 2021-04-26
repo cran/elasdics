@@ -10,8 +10,8 @@ test_that("initial param does not matter too much",{
   mean3 <- compute_elastic_mean(data_curves, eps = 10^-5, max_iter = 10)
   mean4 <- compute_elastic_mean(data_curves, type = "poly")
 
-  expect_equal(mean1$coefs, mean3$coefs, tolerance=1e-1)
-  expect_equal(mean2$coefs, mean4$coefs, tolerance=1e-1)
+  expect_equal(mean((mean1$coefs - mean3$coefs)^2), 0,  tolerance=1e-1)
+  expect_equal(mean((mean2$coefs - mean4$coefs)^2), 0,  tolerance=1e-1)
 })
 
 test_that("0 and 1 iterations of open and closed means",{

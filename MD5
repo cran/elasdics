@@ -1,4 +1,4 @@
-5cbd9a0053cbcea04d7c44bff7a44aaf *DESCRIPTION
+110a55569459564ed9afcc164ff0161d *DESCRIPTION
 496dff06c22a331bb6fa511c8257f736 *NAMESPACE
 8548848780dfbd86444c24ef2c4e23c4 *R/align_curves.R
 e59bedf421c13e6f3aec193354e28dba *R/compute_elastic_mean.R
@@ -31,9 +31,9 @@ a8100745b2dda35733e4ac64663cbefc *man/plot.aligned_curves.Rd
 bd15e572ad18927bf7cc19fed38f2a50 *man/plot.elastic_mean.Rd
 37d682a2a9bd4ebfa00432d9031ab74b *man/srvf_to_curve.Rd
 5331ad89bfa742e155505022806bb73d *tests/testthat.R
-02f9b03bc29eb5e60f1f7f35f97c9642 *tests/testthat/Rplots.pdf
-deed07c581375497341c894d69a1fc65 *tests/testthat/test_align_curves.R
-875159b9b8454c41de6bfcc78050007e *tests/testthat/test_compute_elastic_mean.R
+e63bddcac633cd716965be884e49c574 *tests/testthat/Rplots.pdf
+3aaa43f29ad6aee4331a7bed4748db9d *tests/testthat/test_align_curves.R
+f0e8c6eb807efb62b4d2c78cc82f4cae *tests/testthat/test_compute_elastic_mean.R
 b5136303e8062ec8f195de2b663cafb7 *tests/testthat/test_find_optimal_t.R
 e2264eb81c9dd34beb0d18185ce840be *tests/testthat/test_get_evals.R
 da928e8a730a7ae97bc8e886c473230a *tests/testthat/test_get_loss_discrete.R
