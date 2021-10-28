@@ -17,22 +17,29 @@ plot.aligned_curves <- function(x, points_col = rainbow, ...){
   oldpar <- par(no.readonly = TRUE)
   on.exit(par(oldpar))
   #input checking
-  if(ncol(x$data_curve1) != 3) stop("Plotting method only for 2d curves available!")
+  if(!(ncol(x$data_curve1) %in% c(2, 3))){
+    stop("Plotting method only for 1d functions and 2d curves available!")
+  }
   if(x$closed){
     x <- get_start_end(x)
   }
+  if(ncol(x$data_curve1) == 2){
+    data_range <- range(c(x$data_curve1[,-1], x$data_curve2_aligned[,-c(1,2)]))
+    plot(x$data_curve1, type = "l", ylim = data_range, main = "Aligned curves")
+    lines(x$data_curve2[,-1], type = "l", col = "darkgrey")
+  } else {
+    warping <- get_warping(x)
+    points1 <- get_evals(x$data_curve1, warping$t)
+    x$data_curve2_aligned$t_optim <- NULL
+    points2 <- get_evals(x$data_curve2_aligned, warping$gamma_t)
 
-  warping <- get_warping(x)
-  points1 <- get_evals(x$data_curve1, warping$t)
-  x$data_curve2_aligned$t_optim <- NULL
-  points2 <- get_evals(x$data_curve2_aligned, warping$gamma_t)
-
-  par(mfrow = c(1,2))
-  plot(points1, col = "gray", type = "l", ...)
-  points(points1, pch = 16, col = points_col(nrow(points1)), ...)
-  plot(points2, col = "gray", type = "l", ...)
-  points(points2, pch = 16, col = points_col(nrow(points2)), ...)
-  par(mfrow = c(1,1))
+    par(mfrow = c(1,2))
+    plot(points1, col = "gray", type = "l", ...)
+    points(points1, pch = 16, col = points_col(nrow(points1)), ...)
+    plot(points2, col = "gray", type = "l", ...)
+    points(points2, pch = 16, col = points_col(nrow(points2)), ...)
+    par(mfrow = c(1,1))
+  }
 }
 
 get_warping <- function(aligned_curves){

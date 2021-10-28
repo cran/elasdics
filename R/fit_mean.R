@@ -29,7 +29,7 @@ fit_mean <- function(srv_data_curves, knots, max_iter, type, eps){
 
     # fit model
     coefs_old <- coefs
-    coefs <- apply(model_data[,-1], 2, function(q_m_x_long){
+    coefs <- apply(model_data[,-1, drop = FALSE], 2, function(q_m_x_long){
       q_m_x_long[!is.finite(q_m_x_long)] <- NA
       coef(lm(q_m_x_long ~ -1 + make_design(model_data[,1], knots = knots,
                                             closed = FALSE, type = type)))
@@ -94,15 +94,17 @@ get_model_data <- function(t_optims, srv_data_curves, knots, type){
         idx_knot <- findInterval(knot, t_optims[[j]], rightmost.closed = T)
         q_m_data[[j]][idx_knot, ]
       })
-      q_knots <- data.frame("t" = knots[-length(knots)], t(q_m_knots))
+      q_knots <- as.data.frame(t(rbind("t" = knots[-length(knots)], q_m_knots)))
+      #q_knots <- data.frame("t" = knots[-length(knots)], t(q_m_knots))
       q_data <-  data.frame("t" = t_optims[[j]][-length(t_optims[[j]])], q_m_data[[j]])
+      names(q_knots) <- names(q_data)
       data <- rbind(q_knots, q_data)
       unique(data[order(data$t),])
     })
     m <- lapply(q_m_all, function(x){
       c(x$t[-1], 1) - 0.5*diff(c(x$t, 1))
     })
-    q_m <- lapply(q_m_all, function(x) x[,-1])
+    q_m <- lapply(q_m_all, function(x) x[,-1, drop = FALSE])
   } else {
     m <- lapply(t_optims, function(t_optim){
       t_optim[-1] - 0.5*diff(t_optim)

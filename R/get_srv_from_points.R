@@ -50,6 +50,7 @@ get_srv_from_points <- function(data_curve){
   data_points <- as.matrix(data_curve[, names(data_curve) != "t"])
   diff_points <- diff(data_points)
   factor <- 1/(sqrt(diff(data_curve$t))*rowSums(diff_points^2)^0.25)
+  factor <- ifelse(is.finite(factor), factor, 0)
   srv_vectors <- factor*diff_points
   srv_data <- data.frame("t" = data_curve$t[-nrow(data_curve)], srv_vectors)
   srv_data
@@ -67,8 +68,8 @@ get_points_from_srv <- function(srv_data){
   t <- c(srv_data$t, 1)
   norm <- sqrt(apply(srv_vectors^2, 1, sum))
   v <- apply(srv_vectors, 2, function(x) x*norm)
-  path <- apply(v, 2, function(x) x*diff(t))
-  points <- rbind(c(0,0), apply(path, 2, cumsum))
+  path <- apply(v, 2, function(x) c(0, x*diff(t)))
+  points <- rbind(apply(path, 2, cumsum))
   data.frame(points)
 }
 

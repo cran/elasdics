@@ -43,6 +43,15 @@ test_that("mean for 3d curves is 3d",{
   expect_equal(ncol(elastic_mean$coefs), 3)
 })
 
+test_that("mean for 1d curves",{
+  data_curve1 <- data.frame(x1 = 1:20*sin(1:20)/20)
+  data_curve2 <- data.frame(x1 = cos(1:15))
+  data_curves <- list(data_curve1, data_curve2)
+  expect_warning(elastic_mean <- compute_elastic_mean(data_curves, type = "smooth",
+                                                      knots = seq(0,1,0.25)))
+  expect_equal(ncol(elastic_mean$coefs), 1)
+})
+
 test_that("same dim for all curves", {
   data_curve1 <- data.frame(x1 = 1:20*sin(1:20), x2 = 1:10*cos(1:20), x3 = tan(1:20))
   data_curve2 <- data.frame(x1 = sin(1:20), x2 = cos(1:20/2))

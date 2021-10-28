@@ -28,5 +28,5 @@ test_that("only for 2d curves",{
   data_curve1 <- data.frame(x1 = c(1, 0.5, -1, -1), x2 = c(1, -0.5, -1, 1), x3 = c(1, -0.5, -1, 1))
   data_curve2 <- data.frame(x1 = c(0.1,0.7)*sin(1:6), x2 = cos(1:6), x3 = cos(1:6))
   aligned_curves <- align_curves(data_curve1, data_curve2)
-  expect_error(plot(aligned_curves), "Plotting method only for 2d curves available!")
+  expect_error(plot(aligned_curves), "Plotting method only for 1d functions and 2d curves available!")
 })

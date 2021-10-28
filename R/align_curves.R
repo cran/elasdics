@@ -37,15 +37,16 @@
 
 
 align_curves <- function(data_curve1, data_curve2, closed = FALSE, eps = 0.01){
-  #remove duplicated points
-  data_curve1 <- remove_duplicate(data_curve1)
-  data_curve2 <- remove_duplicate(data_curve2)
-  if(attributes(data_curve1)$points_rm | attributes(data_curve2)$points_rm){
-    warning("Duplicated points in data curves have been removed!")
-  }
   # input checking given parametrisation t
   if("t" %in% names(data_curve1)) check_param(data_curve1, closed)
   if("t" %in% names(data_curve2)) check_param(data_curve2, closed)
+
+  #remove duplicated points
+  data_curve1 <- remove_duplicate(data_curve1, closed = closed)
+  data_curve2 <- remove_duplicate(data_curve2, closed = closed)
+  if(attributes(data_curve1)$points_rm | attributes(data_curve2)$points_rm){
+    warning("Duplicated points in data curves have been removed!")
+  }
 
   # input checking for closed curves
   if(closed){
@@ -57,6 +58,8 @@ align_curves <- function(data_curve1, data_curve2, closed = FALSE, eps = 0.01){
   srv_data_2 <- get_srv_from_points(data_curve2)
   if(ncol(srv_data_1) != ncol(srv_data_2)) stop("Both curves must have same number of dimensions!")
   #remove parametrisation
+  if(ncol(srv_data_1) == 2) warning("This package was designed to analyse curve data in d-dimensions with d > 1.
+                                    It might still be used for functional data (d = 1) but results might not be satisfing")
   if("t" %in% names(data_curve1)) data_curve1$t  <- NULL
   if("t" %in% names(data_curve2)) data_curve2$t  <- NULL
   # after computing the srv transformations the parametrisation t is definitly
@@ -146,12 +149,17 @@ check_closed <- function(data_curve){
 #' @param data_curve data of curve like in \code{align_curves}
 #' @noRd
 
-remove_duplicate <- function(data_curve){
+remove_duplicate <- function(data_curve, closed){
+  if(ncol(data_curve) == 1){
+    attr(data_curve, "points_rm") <- FALSE
+    return(data_curve)
+  }
   points <- as.data.frame(data_curve)
   try(points$t <- NULL, silent = TRUE)
   moves <- c(TRUE, rowSums(apply(points, 2, diff)^2) != 0)
   data_curve <- data_curve[moves,]
   attr(data_curve, "points_rm") <- !all(moves)
+  if(!is.null(data_curve$t) & !closed) data_curve$t[nrow(data_curve)] <- 1
   data_curve
 }
 

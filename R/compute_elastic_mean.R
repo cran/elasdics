@@ -56,11 +56,12 @@
 
 compute_elastic_mean <- function(data_curves, knots = seq(0, 1, len = 5),
                                  type = c("smooth", "polygon"), closed = FALSE,
-                                 eps = 0.01, pen_factor = 100, max_iter = 50) {
+                                 eps = 0.01, pen_factor = 100,
+                                 max_iter = 50){
   #input checking
   stopifnot(all(sapply(data_curves, is.data.frame)))
   # remove duplicated points
-  data_curves <- lapply(data_curves, remove_duplicate)
+  data_curves <- lapply(data_curves, remove_duplicate, closed = closed)
   if(sum(sapply(data_curves, function(curve){attributes(curve)$points_rm}) > 0)){
     warning("Duplicated points in data curves have been removed!")
   }
@@ -93,11 +94,14 @@ compute_elastic_mean <- function(data_curves, knots = seq(0, 1, len = 5),
   if(length(unique(sapply(data_curves, ncol))) != 1) stop("All curves must have same number of dimensions!")
 
   srv_data_curves <- lapply(data_curves, get_srv_from_points)
+  if(ncol(srv_data_curves[[1]]) == 2) warning("This package was designed to analyse curve data in d-dimensions with d > 1.
+                                    It might still be used for functional data (d = 1) but results might not be satisfing")
 
   type <- match.arg(type, c("smooth", "polygon"))
   if(!closed){
     elastic_mean <- fit_mean(srv_data_curves = srv_data_curves, knots = knots,
-                           max_iter = max_iter, type = type, eps = eps)
+                             max_iter = max_iter, type = type,
+                             eps = eps)
     data_curves <- lapply(1:length(data_curves), function(j){
       data_curves[[j]]$t_optim <- elastic_mean$t_optims[[j]]
       attributes(data_curves[[j]]$t_optim) <- NULL
@@ -108,7 +112,8 @@ compute_elastic_mean <- function(data_curves, knots = seq(0, 1, len = 5),
 
   } else if(closed){
     elastic_mean <- fit_mean_closed(srv_data_curves = srv_data_curves, knots = knots,
-                             max_iter = max_iter, type = type, eps = eps, pen_factor = pen_factor)
+                                    max_iter = max_iter, type = type,
+                                    eps = eps, pen_factor = pen_factor)
     data_curves <- lapply(1:length(data_curves), function(j){
       t_optim <- elastic_mean$t_optims[[j]][-length(elastic_mean$t_optims[[j]])]
       data_curve <- data_curves[[j]][-nrow(data_curves[[j]]), ]

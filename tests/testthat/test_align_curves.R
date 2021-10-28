@@ -67,6 +67,14 @@ test_that("3d curves", {
                tolerance = 1e-2)
 })
 
+test_that("1d curves", {
+  data_curve1 <- data.frame(x1 = 1:20*sin(1:20)/20)
+  data_curve2 <- data.frame(x1 = cos(1:15))
+  expect_warning(align_curves(data_curve1, data_curve2))
+  data_curve1$t <- 0:(nrow(data_curve1) - 1)/(nrow(data_curve1) - 1)
+  expect_warning(align_curves(data_curve1, data_curve2))
+})
+
 test_that("same dim for both curves", {
   data_curve1 <- data.frame(x1 = 1:20*sin(1:20), x2 = 1:10*cos(1:20), x3 = tan(1:20))
   data_curve2 <- data.frame(x1 = sin(1:20), x2 = cos(1:20/2))

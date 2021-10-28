@@ -28,6 +28,6 @@ test_that("plot gives error if more than two dim",{
   #compute elastic means
   knots <- seq(0,1, length = 11)
   elastic_mean <- compute_elastic_mean(data_curves, knots = knots, type = "polygon")
-  expect_error(plot(elastic_mean), "Plotting option only for planar curves!")
+  expect_error(plot(elastic_mean), "Plotting option only for functions and planar curves!")
 })
 
