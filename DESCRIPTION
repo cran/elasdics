@@ -1,7 +1,7 @@
 Package: elasdics
 Type: Package
 Title: Elastic Analysis of Sparse, Dense and Irregular Curves
-Version: 0.1.3
+Version: 0.1.4
 Author: Lisa Steyer <lisa.steyer@hu-berlin.de>
 Maintainer: Lisa Steyer <lisa.steyer@hu-berlin.de>
 Description: Provides functions to align curves and to compute mean curves based on the 
@@ -15,6 +15,6 @@ Imports: splines, stats, numDeriv
 RoxygenNote: 7.1.2
 Suggests: testthat, covr
 NeedsCompilation: no
-Packaged: 2021-10-28 14:10:47 UTC; Lisa
+Packaged: 2021-12-02 09:46:48 UTC; Lisa
 Repository: CRAN
-Date/Publication: 2021-10-28 14:30:02 UTC
+Date/Publication: 2021-12-02 11:00:03 UTC

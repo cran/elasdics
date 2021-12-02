@@ -156,7 +156,7 @@ remove_duplicate <- function(data_curve, closed){
   }
   points <- as.data.frame(data_curve)
   try(points$t <- NULL, silent = TRUE)
-  moves <- c(TRUE, rowSums(apply(points, 2, diff)^2) != 0)
+  moves <- c(TRUE, rowSums(apply(points, 2, diff)^2) > max(points)*.Machine$double.eps)
   data_curve <- data_curve[moves,]
   attr(data_curve, "points_rm") <- !all(moves)
   if(!is.null(data_curve$t) & !closed) data_curve$t[nrow(data_curve)] <- 1

@@ -1,6 +1,6 @@
-4d2b2431bb8cdb785b450ecafc527a42 *DESCRIPTION
+0d61b45615b97bc7994496ffb166a7de *DESCRIPTION
 496dff06c22a331bb6fa511c8257f736 *NAMESPACE
-f624c11d6265fcb9bf857d5d71f9c9f3 *R/align_curves.R
+9358957e37fe2a482b4633ac2f1f294c *R/align_curves.R
 8979eabd829da5f4c49d399caea6666c *R/compute_elastic_mean.R
 69cb8adaafdeee522f771429974c8927 *R/elasdics.R
 31612d3c3fdc2d0a2333a4d45eff19ff *R/find_optimal_t.R
