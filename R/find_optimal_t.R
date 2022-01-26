@@ -10,6 +10,11 @@
 #' optimal time points have the distance of the observation to the srv_curve as an attribute
 
 find_optimal_t <- function(srv_curve, s, q, initial_t = s, eps = 10*.Machine$double.eps){
+  #make sure initial_t is not on the boundary
+  diff_initial_t <- diff(initial_t)
+  diff_initial_t[diff_initial_t == 0] <- .Machine$double.eps
+  initial_t <- c(0, cumsum(diff_initial_t))/sum(diff_initial_t)
+
   t <- initial_t[2:(length(s)-1)]
   ui <- rbind(diag(1, length(t)), 0) - rbind(0, diag(1, length(t)))
   ci <- c(rep(0, length(t)), -1)
@@ -18,6 +23,7 @@ find_optimal_t <- function(srv_curve, s, q, initial_t = s, eps = 10*.Machine$dou
                          ui = ui, ci = ci, grad = get_grad,
                          control = list(reltol = eps))
   t_optim <- c(0, optim_obj$par, 1)
+
   p_integrand <- function(t){sapply(t, function(t) sum(srv_curve(t)^2))}
   dist <- sqrt(integrate(p_integrand,0,1, stop.on.error = FALSE)$value +
                  sum(q^2%*%diff(s)) + 2*optim_obj$value)

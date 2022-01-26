@@ -42,3 +42,16 @@ test_that("symmetric shape",{
   expect_equal(as.numeric(t_optim1), c(0, 0.5, 1), tolerance=1e-5)
   expect_equal(as.numeric(t_optim1), as.numeric(t_optim2), tolerance=1e-5)
 })
+
+test_that("give initial t",{
+  srv_curve <- function(t){
+    sapply(t, function(t) t(c(sin(5*t), t*cos(5*t))))
+  }
+  data_curve <- as.data.frame(rbind(c(0,0), c(2,0), c(-1,-1)))
+  srv_vec <- get_srv_from_points(data_curve)
+  t_optim_1 <- find_optimal_t(srv_curve, c(srv_vec$t,1), t(srv_vec[,-1]),
+                            initial_t = c(0,1,1))
+  t_optim_2 <- find_optimal_t(srv_curve, c(srv_vec$t,1), t(srv_vec[,-1]))
+  expect_equal(t_optim_1, t_optim_2,
+               tolerance=1e-3)
+})
