@@ -81,35 +81,27 @@ fit_mean <- function(srv_data_curves, knots, max_iter, type, eps){
 }
 
 get_model_data <- function(t_optims, srv_data_curves, knots, type){
-  #compute warped srv vectors
-  q_m_data <- lapply(1:length(srv_data_curves), function(j){
-    old_diff <- diff(c(srv_data_curves[[j]]$t, 1))
-    new_diff <- diff(t_optims[[j]])
-    as.matrix(srv_data_curves[[j]][,-1])*sqrt(old_diff/new_diff)
-  })
-
   if(type == "polygon"){
-    q_m_all <- lapply(1: length(srv_data_curves), function(j){
-      q_m_knots <- sapply(knots[-length(knots)], function(knot){
-        idx_knot <- findInterval(knot, t_optims[[j]], rightmost.closed = T)
-        q_m_data[[j]][idx_knot, ]
-      })
-      q_knots <- as.data.frame(t(rbind("t" = knots[-length(knots)], q_m_knots)))
-      #q_knots <- data.frame("t" = knots[-length(knots)], t(q_m_knots))
-      q_data <-  data.frame("t" = t_optims[[j]][-length(t_optims[[j]])], q_m_data[[j]])
-      names(q_knots) <- names(q_data)
-      data <- rbind(q_knots, q_data)
-      unique(data[order(data$t),])
+    q_m <- lapply(1: length(srv_data_curves), function(j){
+      curve <- data.frame("t" = t_optims[[j]],
+        get_points_from_srv(srv_data_curves[[j]]))
+      curve_at_knots <- cbind("t" = knots, get_evals(curve, t_grid = knots))
+      get_srv_from_points(curve_at_knots)[,-1, drop = FALSE]
     })
-    m <- lapply(q_m_all, function(x){
-      c(x$t[-1], 1) - 0.5*diff(c(x$t, 1))
+    m <- lapply(srv_data_curves, function(x){
+      knots[-1] - 0.5*diff(knots)
     })
-    q_m <- lapply(q_m_all, function(x) x[,-1, drop = FALSE])
   } else {
+    #compute warped srv vectors
+    q_m <- lapply(1:length(srv_data_curves), function(j){
+      old_diff <- diff(c(srv_data_curves[[j]]$t, 1))
+      new_diff <- diff(t_optims[[j]])
+      as.matrix(srv_data_curves[[j]][,-1])*sqrt(old_diff/new_diff)
+    })
+
     m <- lapply(t_optims, function(t_optim){
       t_optim[-1] - 0.5*diff(t_optim)
     })
-    q_m <- q_m_data
   }
 
   #convert in long format

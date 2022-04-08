@@ -59,4 +59,8 @@ test_that("same dim for all curves", {
   expect_error(compute_elastic_mean(data_curves), "All curves must have same number of dimensions!")
 })
 
-
+test_that("duplicated points are removed", {
+  data_curve <- data.frame(x1 = 1:20*sin(1:20), x2 = 1:10*cos(1:20), x3 = tan(1:20))
+  data_curve <- rbind(data_curve[1,], data_curve)
+  expect_warning(compute_elastic_mean(list(data_curve)), "Duplicated points in data curves have been removed!")
+})

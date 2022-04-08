@@ -48,6 +48,9 @@ find_optimal_t_discrete <- function(r, p, s, q, initial_t = s, eps = 10^-3){
 #' coordinate direction
 
 optimise_one_coord_analytic <-function(t, i, r, p, s, q){
+  # if optimisation interval is just one point
+  if (t[i- 1] == t[i + 1]) return(t)
+
   # Find time points in the current interval
   idx_r <- which(r > t[i - 1] & r < t[i + 1])
   r_restr <- c(t[i-1], r[idx_r], t[i + 1])

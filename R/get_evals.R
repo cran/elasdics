@@ -32,8 +32,10 @@ get_evals.data.frame <- function(curve, t_grid = NULL, ...){
   points <- sapply(t_grid, function(t){
     idx <- findInterval(t, curve$t, rightmost.closed = T)
     weights <- c(1,-1)*(curve$t[c(idx +1, idx)] - t)/(curve$t[idx + 1] - curve$t[idx])
-    t(weights)%*%as.matrix(curve[c(idx, idx + 1), -1])
+    t(weights)%*%as.matrix(curve[c(idx, idx + 1), -1, drop = FALSE])
   })
+
+  if(!is.matrix(points)) points <- t(matrix(points))
   points <- as.data.frame(t(points))
   names(points) <- names(curve)[-1]
   points

@@ -24,6 +24,9 @@ test_that("input checking parametrisation", {
   data_curve$t <- 0:5/6
   expect_error(align_curves(data_curve, data_curve),
                "Last value of parametrisation t needs to be 1!")
+  data_curve <- rbind(data_curve[1,], data_curve)
+  data_curve$t <- NULL
+  expect_warning(align_curves(data_curve, data_curve), "Duplicated points in data curves have been removed!")
 })
 
 test_that("input checking closed curves", {
@@ -79,5 +82,12 @@ test_that("same dim for both curves", {
   data_curve1 <- data.frame(x1 = 1:20*sin(1:20), x2 = 1:10*cos(1:20), x3 = tan(1:20))
   data_curve2 <- data.frame(x1 = sin(1:20), x2 = cos(1:20/2))
   expect_error(align_curves(data_curve1, data_curve2), "Both curves must have same number of dimensions!")
+})
+
+test_that("closed curve with points mapped to same optimal time", {
+  t_grid <- seq(0,1, length = 10)
+  data_curve1 <- data.frame(x1 = t_grid, x2 = sin(9*t_grid))
+  data_curve2 <- data.frame(x1 = t_grid, x2 = sin(3*t_grid))
+  expect_equal(sum(diff(align_curves(data_curve2, data_curve1, closed = TRUE)$data_curve2_aligned$t_optim) == 0) > 0, TRUE)
 })
 

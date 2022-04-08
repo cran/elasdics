@@ -31,3 +31,14 @@ test_that("plot gives error if more than two dim",{
   expect_error(plot(elastic_mean), "Plotting option only for functions and planar curves!")
 })
 
+test_that("plot 1 dim mean",{
+  data_curve1 <- data.frame(t = 0:6/6, x = sin(1:7/4*pi))
+  data_curve2 <- data_curve <- data.frame(t = 0:14/14, x = sin(1:15/8*pi))
+  data_curves <- list(data_curve1, data_curve2)
+
+  #compute elastic means
+  knots <- seq(0,1, length = 11)
+  expect_warning(elastic_mean <- compute_elastic_mean(data_curves, knots = knots, type = "polygon"))
+  expect_warning(plot(elastic_mean), regexp = NA)
+})
+
