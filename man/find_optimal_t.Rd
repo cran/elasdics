@@ -7,13 +7,13 @@
 find_optimal_t(srv_curve, s, q, initial_t = s, eps = 10 * .Machine$double.eps)
 }
 \arguments{
-\item{srv_curve}{srv transformation of the smooth curve, needs to be vectorised}
+\item{srv_curve}{srv transformation of the smooth curve, needs to be vectorized}
 
 \item{s}{time points for q, first has to be 0, last has to be 1}
 
 \item{q}{square root velocity vectors, one less than time points in s}
 
-\item{initial_t}{starting value for the optimisation algorithm}
+\item{initial_t}{starting value for the optimization algorithm}
 
 \item{eps}{convergence tolerance}
 }

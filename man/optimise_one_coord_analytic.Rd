@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_optimal_t_discrete.R
 \name{optimise_one_coord_analytic}
 \alias{optimise_one_coord_analytic}
-\title{Does optimisation in one parameter direction}
+\title{Does optimization in one parameter direction}
 \usage{
 optimise_one_coord_analytic(t, i, r, p, s, q)
 }
@@ -20,9 +20,9 @@ optimise_one_coord_analytic(t, i, r, p, s, q)
 \item{q}{square root velocity vectors, one less than time points in s}
 }
 \value{
-optimal time points for q with respect to optimisation only in the i-th
+optimal time points for q with respect to optimization only in the i-th
 coordinate direction
 }
 \description{
-Does optimisation in one parameter direction
+Does optimization in one parameter direction
 }

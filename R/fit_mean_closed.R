@@ -15,7 +15,7 @@
 #'   \item{type}{"smooth" or "polygon"}
 #'   \item{coefs}{\code{coefs} srv spline coefficients of the estimated mean}
 #'   \item{knots}{spline knots}
-#'   \item{t_optims}{optimal parametrisation}
+#'   \item{t_optims}{optimal parametrization}
 #'   \item{shift_idxs}{index of the starting point of the closed curve after alignment}
 
 fit_mean_closed <- function(srv_data_curves, knots, max_iter, type, eps, pen_factor){
@@ -173,7 +173,6 @@ get_grad_penalty_fun <- function(coefs_long, pen_factor, model_data, knots, type
   left_part <- t(design_mat)%*%design_mat%*%coefs
   right_part <- t(design_mat)%*%as.matrix(model_data[,-1])
   grad_part_linear <- as.vector(left_part - right_part)
-
 
   penalty_fun <- function(coefs_long){
     coefs <- matrix(coefs_long, ncol = 2)

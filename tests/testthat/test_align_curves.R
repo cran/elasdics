@@ -17,13 +17,13 @@ test_that("three points shape",{
 test_that("input checking parametrisation", {
   data_curve <- data.frame(x1 = sin(1:6), x2 = cos(1:6), t = 0:5)
   expect_error(align_curves(data_curve, data_curve),
-               "Parametrisation t needs to be within 0 and 1 and increasing!")
+               "Parametrization t needs to be within 0 and 1 and increasing!")
   data_curve$t <- 1:6/6
   expect_error(align_curves(data_curve, data_curve),
-               "Parametrisation t needs to start at 0!")
+               "Parametrization t needs to start at 0!")
   data_curve$t <- 0:5/6
   expect_error(align_curves(data_curve, data_curve),
-               "Last value of parametrisation t needs to be 1!")
+               "Last value of parametrization t needs to be 1!")
   data_curve <- rbind(data_curve[1,], data_curve)
   data_curve$t <- NULL
   expect_warning(align_curves(data_curve, data_curve), "Duplicated points in data curves have been removed!")

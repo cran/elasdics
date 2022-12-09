@@ -15,7 +15,7 @@ find_optimal_t_discrete_closed(r, p, s, q, initial_t, eps = 10^-3)
 
 \item{q}{square root velocity vectors, one less than time points in s}
 
-\item{initial_t}{starting value for the optimisation algorithm}
+\item{initial_t}{starting value for the optimization algorithm}
 
 \item{eps}{convergence tolerance}
 }
@@ -24,5 +24,5 @@ optimal time points for q, first is last -1
 }
 \description{
 Finds optimal aligned time points for srv curve q to  srv curve p using
-coordinate wise optimisation.
+coordinate wise optimization.
 }

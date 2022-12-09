@@ -17,7 +17,7 @@ compute_elastic_mean(
 \arguments{
 \item{data_curves}{list of \code{data.frame}s with observed points in each row. Each
 variable is one coordinate direction. If there is a variable \code{t},
-it is treated as the time parametrisation, not as an additional coordinate.}
+it is treated as the time parametrization, not as an additional coordinate.}
 
 \item{knots}{set of knots for the mean spline curve}
 
@@ -40,8 +40,8 @@ with entries
   \item{coefs}{spline coeffiecients}
   \item{knots}{spline knots}
   \item{data_curves}{list of \code{data.frame}s with observed points in each row.
-  First variable \code{t} gives the initial parametrisation, second variable \code{t_optim}
-  the optimal parametrisation when the curve is aligned to the mean.}
+  First variable \code{t} gives the initial parametrization, second variable \code{t_optim}
+  the optimal parametrization when the curve is aligned to the mean.}
   \item{closed}{\code{TRUE} if the mean is supposed to be a closed curve.}
 }
 \description{

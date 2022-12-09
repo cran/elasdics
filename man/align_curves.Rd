@@ -9,7 +9,7 @@ align_curves(data_curve1, data_curve2, closed = FALSE, eps = 0.01)
 \arguments{
 \item{data_curve1}{\code{data.frame} with observed points in each row. Each
 variable is one coordinate direction. If there is a variable \code{t},
-it is treated as the time parametrisation, not as an additional coordinate.}
+it is treated as the time parametrization, not as an additional coordinate.}
 
 \item{data_curve2}{same as \code{data_curve1}}
 
@@ -20,14 +20,14 @@ it is treated as the time parametrisation, not as an additional coordinate.}
 \value{
 an object of class \code{aligned_curves}, which is a \code{list}
 with entries
-  \item{data_curve1}{\code{data_curve1} with parametrisation variable \code{t}}
-  \item{data_curve2_aligned}{\code{data_curve2} with initial parametrisation
-  variable \code{t} and optimal parametrisation \code{t_optim}}
-  \item{elastic_dist}{elasic distance between curve1 and curve2}
+  \item{data_curve1}{\code{data_curve1} with parametrization variable \code{t}}
+  \item{data_curve2_aligned}{\code{data_curve2} with initial parametrization
+  variable \code{t} and optimal parametrization \code{t_optim}}
+  \item{elastic_dist}{elastic distance between curve1 and curve2}
   \item{closed}{\code{TRUE} if the curves should have been treated as closed.}
 }
 \description{
-Finds the optimal reparametrisation of the second curve (stored in
+Finds the optimal reparametrization of the second curve (stored in
 \code{data_curve2}) to the first one (stored in \code{data_curve1}) with respect
 to the elastic distance. Constructor function for class \code{aligned_curves}.
 }
@@ -38,7 +38,7 @@ data_curve2 <- data.frame(x1 = c(0.1,0.7)*sin(1:6), x2 = cos(1:6))
 aligned_curves <- align_curves(data_curve1, data_curve2)
 plot(aligned_curves)
 
-#different parametrisation of the first curve
+#different parametrization of the first curve
 data_curve1$t <- 0:3/3
 align_curves(data_curve1, data_curve2)
 

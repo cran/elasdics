@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{object of class \code{aligned_curves}, usually a result of a call to \code{\link{align_curves}}}
 
-\item{points_col}{which colour palette is used for points on the curves,
+\item{points_col}{which color palette is used for points on the curves,
 default is rainbow, see \code{\link{rainbow}} for further options.}
 
 \item{...}{further plotting parameters.}
@@ -19,7 +19,7 @@ No value
 }
 \description{
 Plots objects of class \code{aligned_curves}.
-Points of same colour correspond after the second curve is optimally aligned to the first curve.
+Points of same color correspond after the second curve is optimally aligned to the first curve.
 }
 \seealso{
 For examples see documentation of \code{\link{align_curves}}.

@@ -1,11 +1,11 @@
 #' @title Finds optimal alignment for discrete open curves
 #' @description Finds optimal aligned time points for srv curve q to  srv curve p using
-#' coordinate wise optimisation.
+#' coordinate wise optimization.
 #' @param r time points for p, first has to be 0, last has to be 1
 #' @param p square root velocity vectors, one less than time points in r
 #' @param s time points for q, first has to be 0, last has to be 1
 #' @param q square root velocity vectors, one less than time points in s
-#' @param initial_t starting value for the optimisation algorithm
+#' @param initial_t starting value for the optimization algorithm
 #' @param eps convergence tolerance
 #' @return optimal time points for q, without first value 0 and last value 1
 #' optimal time points have the distance of the observation to the srv_curve as an attribute
@@ -40,15 +40,15 @@ find_optimal_t_discrete <- function(r, p, s, q, initial_t = s, eps = 10^-3){
   t_optim
 }
 
-#' Does optimisation in one parameter direction
+#' Does optimization in one parameter direction
 #' @inheritParams find_optimal_t_discrete
 #' @param t current time points, first has to be 0, last has to be 1
 #' @param i index of t that should be updated
-#' @return optimal time points for q with respect to optimisation only in the i-th
+#' @return optimal time points for q with respect to optimization only in the i-th
 #' coordinate direction
 
 optimise_one_coord_analytic <-function(t, i, r, p, s, q){
-  # if optimisation interval is just one point
+  # if optimization interval is just one point
   if (t[i- 1] == t[i + 1]) return(t)
 
   # Find time points in the current interval
@@ -63,7 +63,7 @@ optimise_one_coord_analytic <-function(t, i, r, p, s, q){
     max(0, crossprod(p,q))
   }
 
-  # Optimise analytically
+  # Optimize analytically
   t_optim_k <- sapply(1:(length(r_restr) - 1), function(j){
 
     left_k <- which(1:length(r_restr) < j)
@@ -79,7 +79,7 @@ optimise_one_coord_analytic <-function(t, i, r, p, s, q){
 
     t <- (C^2*B - A^2*D) / (A*C*(A-C))
 
-    ##treat special cases seperatly
+    ##treat special cases separately
     if(A == 0) t <- ifelse(C <= 0, r_restr[j], r_restr[j + 1])
     if(C == 0) t <- ifelse(A <= 0, r_restr[j], r_restr[j + 1])
     if( t < r_restr[j]  ) t <- r_restr[j]

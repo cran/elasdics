@@ -14,7 +14,7 @@
 #'   \item{type}{"smooth" or "polygon"}
 #'   \item{coefs}{\code{coefs} srv spline coefficients of the estimated mean}
 #'   \item{knots}{spline knots}
-#'   \item{t_optims}{optimal parametrisation}
+#'   \item{t_optims}{optimal parametrization}
 
 fit_mean <- function(srv_data_curves, knots, max_iter, type, eps){
   #initial param and coefs

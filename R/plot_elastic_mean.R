@@ -38,8 +38,7 @@ plot.elastic_mean <- function(x, asp = 1, col = "red", ...){
     plot(NULL, xlim = range(data_all[,1]), ylim = range(data_all[,2]), xlab = colnames(x$coefs)[1],
          ylab = colnames(x$coefs)[2], asp = asp)
     #plot data
-
-    lapply(data_curves, lines, col = "gray")
+    invisible(lapply(data_curves, lines, col = "gray"))
 
     #plot mean
     lines(get_evals(x), col = col, lwd = 2)

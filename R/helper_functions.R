@@ -1,6 +1,6 @@
-#' @title Retransform srv curve back to curve
+#' @title Re-transform srv curve back to curve
 #' @param srv_curve srv curve as a function of one parameter,
-#' needs to be vectorised.
+#' needs to be vectorized.
 #' @param t time points at which the resulting curve shall be evaluated.
 #' @return a \code{matrix} with curve evaluations at time points t in its columns,
 #' rows correspond to coordinate directions

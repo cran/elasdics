@@ -25,7 +25,7 @@ with entries
   \item{type}{"smooth" or "polygon"}
   \item{coefs}{\code{coefs} srv spline coefficients of the estimated mean}
   \item{knots}{spline knots}
-  \item{t_optims}{optimal parametrisation}
+  \item{t_optims}{optimal parametrization}
 }
 \description{
 Fits an elastic mean for open curves. Is usually called from

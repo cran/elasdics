@@ -1,8 +1,8 @@
 #' Plot method for aligned curves
 #' @description Plots objects of class \code{aligned_curves}.
-#' Points of same colour correspond after the second curve is optimally aligned to the first curve.
+#' Points of same color correspond after the second curve is optimally aligned to the first curve.
 #' @param x object of class \code{aligned_curves}, usually a result of a call to \code{\link{align_curves}}
-#' @param points_col which colour palette is used for points on the curves,
+#' @param points_col which color palette is used for points on the curves,
 #' default is rainbow, see \code{\link{rainbow}} for further options.
 #' @param ... further plotting parameters.
 #' @importFrom grDevices rainbow

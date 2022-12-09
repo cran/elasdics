@@ -15,40 +15,40 @@ get_arc_length_param(data_curve)
 \arguments{
 \item{data_curve}{A \code{data.frame} with observed points on a curve.
 Each row is one point, each variable one coordinate direction. If there is a variable \code{t},
-it is treated as the time parametrisation, not as an additional coordinate.}
+it is treated as the time parametrization, not as an additional coordinate.}
 
 \item{srv_data}{A \code{data.frame} with
-first column \code{t} corresponding to the parametrisation and square-root-velocity
+first column \code{t} corresponding to the parametrization and square-root-velocity
 vectors in the remaining columns.}
 }
 \value{
 \code{get_srv_from_points} returns a \code{data.frame} with
-first column \code{t} corresponding to the parametrisation and square-root-velocity
-vectors in the remaining columns. If no parametrisation is given, the curve will
-be parametrised with respect to arc length. This parametrisation will be
+first column \code{t} corresponding to the parametrization and square-root-velocity
+vectors in the remaining columns. If no parametrization is given, the curve will
+be parametrized with respect to arc length. This parametrization will be
 computed by a call to \code{get_arc_length_param} as well.
 }
 \description{
 Compute the square-root-velocity transformation or the
-parametrisation with respect to arc length for a curve
+parametrization with respect to arc length for a curve
 observed at discrete points.
 }
 \section{Functions}{
 \itemize{
-\item \code{get_srv_from_points}: Compute square-root-velocity transformation
+\item \code{get_srv_from_points()}: Compute square-root-velocity transformation
 for curve data measured at discrete points. The inverse transformation can
 be computed with \code{get_points_from_s}
 
-\item \code{get_points_from_srv}: The inverse transformation to
+\item \code{get_points_from_srv()}: The inverse transformation to
 \code{get_srv_from_points}. Transforms square-root-velocity data to
-points representing a curve (with no parametrisation).
+points representing a curve (with no parametrization).
 
-\item \code{get_arc_length_param}: Compute arc length parametrisation.
+\item \code{get_arc_length_param()}: Compute arc length parametrization.
+
 }}
-
 \examples{
 data_curve1 <- data.frame(x1 = 1:6*sin(1:6), x2 = cos(1:6))
-get_arc_length_param(data_curve1) #same parametrisation as in
+get_arc_length_param(data_curve1) #same parametrization as in
 get_srv_from_points(data_curve1)
 
 data_curve2 <- data.frame(t = seq(0,1, length = 6), data_curve1)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper_functions.R
 \name{srvf_to_curve}
 \alias{srvf_to_curve}
-\title{Retransform srv curve back to curve}
+\title{Re-transform srv curve back to curve}
 \usage{
 srvf_to_curve(t, srv_curve)
 }
@@ -10,12 +10,12 @@ srvf_to_curve(t, srv_curve)
 \item{t}{time points at which the resulting curve shall be evaluated.}
 
 \item{srv_curve}{srv curve as a function of one parameter,
-needs to be vectorised.}
+needs to be vectorized.}
 }
 \value{
 a \code{matrix} with curve evaluations at time points t in its columns,
 rows correspond to coordinate directions
 }
 \description{
-Retransform srv curve back to curve
+Re-transform srv curve back to curve
 }

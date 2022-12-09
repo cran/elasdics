@@ -24,6 +24,7 @@ test_that("grad is null at maximiser",{
   t_optim <- find_optimal_t(srv_curve, c(srv_vec$t,1), t(srv_vec[,-1]))[[2]]
   expect_equal(get_grad(t_optim, srv_curve, c(srv_vec$t,1), t(srv_vec[,-1])), 0,
                tolerance=1e-3)
+  expect_equal(get_grad(1, srv_curve, c(srv_vec$t,1), t(srv_vec[,-1])) >= 30, TRUE)
 })
 
 test_that("symmetric shape",{
@@ -54,4 +55,7 @@ test_that("give initial t",{
   t_optim_2 <- find_optimal_t(srv_curve, c(srv_vec$t,1), t(srv_vec[,-1]))
   expect_equal(t_optim_1, t_optim_2,
                tolerance=1e-3)
+  expect_error(find_optimal_t(srv_curve, c(srv_vec$t,1), t(srv_vec[,-1]),
+                              initial_t = c(0,1.1,1)),
+               "initial value")
 })

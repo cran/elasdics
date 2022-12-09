@@ -27,7 +27,7 @@ with entries
   \item{type}{"smooth" or "polygon"}
   \item{coefs}{\code{coefs} srv spline coefficients of the estimated mean}
   \item{knots}{spline knots}
-  \item{t_optims}{optimal parametrisation}
+  \item{t_optims}{optimal parametrization}
   \item{shift_idxs}{index of the starting point of the closed curve after alignment}
 }
 \description{

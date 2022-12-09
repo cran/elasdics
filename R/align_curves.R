@@ -1,20 +1,20 @@
 #' Align two curves measured at discrete points
 #' @name align_curves
-#' @description Finds the optimal reparametrisation of the second curve (stored in
+#' @description Finds the optimal reparametrization of the second curve (stored in
 #' \code{data_curve2}) to the first one (stored in \code{data_curve1}) with respect
 #' to the elastic distance. Constructor function for class \code{aligned_curves}.
 #' @param data_curve1 \code{data.frame} with observed points in each row. Each
 #' variable is one coordinate direction. If there is a variable \code{t},
-#' it is treated as the time parametrisation, not as an additional coordinate.
+#' it is treated as the time parametrization, not as an additional coordinate.
 #' @param data_curve2 same as \code{data_curve1}
 #' @param closed \code{TRUE} if the curves should be treated as closed.
 #' @param eps convergence tolerance
 #' @return an object of class \code{aligned_curves}, which is a \code{list}
 #' with entries
-#'   \item{data_curve1}{\code{data_curve1} with parametrisation variable \code{t}}
-#'   \item{data_curve2_aligned}{\code{data_curve2} with initial parametrisation
-#'   variable \code{t} and optimal parametrisation \code{t_optim}}
-#'   \item{elastic_dist}{elasic distance between curve1 and curve2}
+#'   \item{data_curve1}{\code{data_curve1} with parametrization variable \code{t}}
+#'   \item{data_curve2_aligned}{\code{data_curve2} with initial parametrization
+#'   variable \code{t} and optimal parametrization \code{t_optim}}
+#'   \item{elastic_dist}{elastic distance between curve1 and curve2}
 #'   \item{closed}{\code{TRUE} if the curves should have been treated as closed.}
 #' @export
 #' @exportClass aligned_curves
@@ -25,7 +25,7 @@
 #' aligned_curves <- align_curves(data_curve1, data_curve2)
 #' plot(aligned_curves)
 #'
-#' #different parametrisation of the first curve
+#' #different parametrization of the first curve
 #' data_curve1$t <- 0:3/3
 #' align_curves(data_curve1, data_curve2)
 #'
@@ -37,7 +37,7 @@
 
 
 align_curves <- function(data_curve1, data_curve2, closed = FALSE, eps = 0.01){
-  # input checking given parametrisation t
+  # input checking given parametrization t
   if("t" %in% names(data_curve1)) check_param(data_curve1, closed)
   if("t" %in% names(data_curve2)) check_param(data_curve2, closed)
 
@@ -57,12 +57,12 @@ align_curves <- function(data_curve1, data_curve2, closed = FALSE, eps = 0.01){
   srv_data_1 <- get_srv_from_points(data_curve1)
   srv_data_2 <- get_srv_from_points(data_curve2)
   if(ncol(srv_data_1) != ncol(srv_data_2)) stop("Both curves must have same number of dimensions!")
-  #remove parametrisation
+  #remove parametrization
   if(ncol(srv_data_1) == 2) warning("This package was designed to analyse curve data in d-dimensions with d > 1.
                                     It might still be used for functional data (d = 1) but results might not be satisfing")
   if("t" %in% names(data_curve1)) data_curve1$t  <- NULL
   if("t" %in% names(data_curve2)) data_curve2$t  <- NULL
-  # after computing the srv transformations the parametrisation t is definitly
+  # after computing the srv transformations the parametrization t is definitly
   # in the first column
   if(closed){
     #pre alignment
@@ -99,7 +99,7 @@ align_curves <- function(data_curve1, data_curve2, closed = FALSE, eps = 0.01){
 
 }
 
-#' Input checking for given parametrisation
+#' Input checking for given parametrization
 #' @inheritParams align_curves
 #' @param data_curve data of curve like in \code{align_curves}
 #' @noRd
@@ -107,13 +107,13 @@ align_curves <- function(data_curve1, data_curve2, closed = FALSE, eps = 0.01){
 check_param <- function(data_curve, closed = closed){
   if(!(data_curve$t[1] >= 0 & data_curve$t[nrow(data_curve)] <= 1 &
        all(diff(data_curve$t) >= 0))){
-    stop("Parametrisation t needs to be within 0 and 1 and increasing!")
+    stop("Parametrization t needs to be within 0 and 1 and increasing!")
     }
   if(data_curve$t[1] != 0){
-    stop("Parametrisation t needs to start at 0!")
+    stop("Parametrization t needs to start at 0!")
     }
   if(!closed & data_curve$t[nrow(data_curve)] != 1){
-    stop("Last value of parametrisation t needs to be 1!")
+    stop("Last value of parametrization t needs to be 1!")
   }
 }
 
@@ -167,7 +167,7 @@ remove_duplicate <- function(data_curve, closed){
 #' @noRd
 #' @param srv_data_1 srv of curve1
 #' @param srv_data_2 srv of curve2
-#' @param t_optim optimal parametrisation of curve2
+#' @param t_optim optimal parametrization of curve2
 
 compute_distance<- function(srv_data_1, srv_data_2, t_optim, closed){
   norm_1 <- sum(t(srv_data_1[,-1]^2)%*%diff(c(srv_data_1$t,1)))
@@ -179,7 +179,8 @@ compute_distance<- function(srv_data_1, srv_data_2, t_optim, closed){
   } else {
     cross_prod <- get_loss_discrete(t = t_optim, srv_data_1, srv_data_2)
   }
-  sqrt(norm_1 + norm_2 - 2*cross_prod)
+  dist_squared <- norm_1 + norm_2 - 2*cross_prod
+  sqrt(ifelse(dist_squared <= 0, 0, dist_squared))
 }
 
 
