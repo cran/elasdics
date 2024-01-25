@@ -17,7 +17,6 @@
 #'   \item{elastic_dist}{elastic distance between curve1 and curve2}
 #'   \item{closed}{\code{TRUE} if the curves should have been treated as closed.}
 #' @export
-#' @exportClass aligned_curves
 #' @examples
 #' #open curves
 #' data_curve1 <- data.frame(x1 = c(1, 0.5, -1, -1), x2 = c(1, -0.5, -1, 1))

@@ -13,6 +13,7 @@
 #' @param closed \code{TRUE} if the curves should be treated as closed.
 #' @param eps the algorithm stops if L2 norm of coefficients changes less
 #' @param max_iter maximal number of iterations
+#' @param pre_align TRUE if curves should be pre aligned to the mean
 #' @return an object of class \code{elastic_reg_model}, which is a \code{list}
 #' with entries
 #'   \item{type}{"smooth" if linear srv-splines or
@@ -24,7 +25,6 @@
 #'   the optimal parametrization when the curve is aligned to the model prediction.}
 #'   \item{closed}{\code{TRUE} if the regression model fitted closed curves.}
 #' @export
-#' @exportClass elastic_reg_model
 #' @importFrom splines splineDesign
 #' @examples
 #' curve <- function(x_1, x_2, t){
@@ -44,37 +44,71 @@
 #' plot(reg_model)
 
 fit_elastic_regression <- function(formula, data_curves, x_data, knots = seq(0,1,0.2), type = "smooth",
-                                   closed = FALSE, max_iter = 10, eps = 0.001){
+                                   closed = FALSE, max_iter = 10, eps = 0.001, pre_align = FALSE){
+  #input checking
   formula <- as.formula(formula)
   if(formula[[2]] != "data_curves") stop("formula must be of form data_curves ~ ...")
-
+  stopifnot(all(sapply(data_curves, is.data.frame)))
+  # remove duplicated points
+  data_curves <- lapply(data_curves, remove_duplicate, closed = closed)
+  if(sum(sapply(data_curves, function(curve){attributes(curve)$points_rm}) > 0)){
+    warning("Duplicated points in data curves have been removed!")
+  }
+  data_curves <- lapply(data_curves, function(curve){
+    attr(curve, "points_rm") <- NULL
+    curve
+  })
+  # input checking given parametrisation t
+  lapply(data_curves, function(data_curve){
+    if("t" %in% names(data_curve)) check_param(data_curve, closed)
+  })
+  # input checking for closed curves
+  if(closed){
+    data_curves <- lapply(data_curves, function(data_curve){
+      check_closed(data_curve)
+    })
+  }
+  # parametrisation with respect to arc length if not given,
+  # after this, parametrisation is always in the first column
+  data_curves <- lapply(data_curves, function(data_curve){
+    if(!("t" %in% colnames(data_curve))){
+      data.frame("t" = get_arc_length_param(data_curve), data_curve)
+    } else {
+      param <- data_curve$t
+      data_curve$t <- NULL
+      data.frame("t" = param, data_curve)
+    }
+  })
+  ##############################################################################
   # create x dataframe
   x_data <- data.frame(x_data)
 
   # create x model matrix
   x_model_matrix <- model.matrix(formula, cbind("data_curves" = 1, x_data))
 
-  # input checking for closed curves
-  if(closed) data_curves <- lapply(data_curves, check_closed)
-
-  #remove duplicated points
-  data_curves <- lapply(data_curves, remove_duplicate, closed = closed)
-
   #compute srv
   srv_data <- lapply(data_curves, get_srv_from_points)
 
-  #initial alignment as optimal alignment to the mean
-  mean <- compute_elastic_mean(data_curves, knots = seq(0,1,0.01), max_iter = 100, type = "polygon",
-                               eps = 0.001, closed = closed)
+  if(pre_align){
+    #initial alignment as optimal alignment to the mean
+    mean <- compute_elastic_mean(data_curves, knots = seq(0,1,0.01), max_iter = 100, type = "polygon",
+                                 eps = 0.001, closed = closed)
 
-  data_curves <- lapply(mean$data_curves, function(data_curve){
-    if(data_curve$t_optim[nrow(data_curve)] == 0){
-      data_curve$t_optim[nrow(data_curve)] <- 1
-    }
-    attr(data_curve, "dist_to_prediction") <- attributes(data_curve)$dist_to_mean
-    attr(data_curve, "dist_to_mean") <- NULL
-    data_curve
-  })
+    data_curves <- lapply(mean$data_curves, function(data_curve){
+      if(data_curve$t_optim[nrow(data_curve)] == 0){
+        data_curve$t_optim[nrow(data_curve)] <- 1
+      }
+      attr(data_curve, "dist_to_prediction") <- attributes(data_curve)$dist_to_mean
+      attr(data_curve, "dist_to_mean") <- NULL
+      data_curve
+    })
+  } else {
+    data_curves <- lapply(data_curves, function(data_curve){
+      data_curve <- data.frame("t" = data_curve$t, "t_optim" = data_curve$t, data_curve[,-1])
+      attr(data_curve, "dist_to_prediction") <- Inf
+      data_curve
+    })
+  }
 
   srv_data_initial <- lapply(1:length(srv_data), function(i){
     dat <- srv_data[[i]]
@@ -89,53 +123,35 @@ fit_elastic_regression <- function(formula, data_curves, x_data, knots = seq(0,1
   })
 
   #initiate values
-  t_optims <- lapply(mean$data_curves, function(curve){
+  t_optims <- lapply(data_curves, function(curve){
     c(sort(curve$t_optim[-length(curve$t_optim)]), 1)
   })
   coefs_list <- 0
 
   for(i in 1:max_iter){
     coefs_list_old <- coefs_list
+    data_curves_t_now <- lapply(1:length(data_curves_t), function(i){
+      idx <- c(TRUE, diff(t_optims[[i]]) != 0)
+      data.frame("t" = t_optims[[i]][idx], data_curves_t[[i]][idx, -1])
+    })
 
-    if(type == "polygon"){
-      srv_data_discrete <- lapply(1:length(data_curves), function(i){
-        data_curves_t[[i]]$t <- t_optims[[i]]
-        curve_data <- get_evals(data_curves_t[[i]], t_grid = knots)
-        unlist(get_srv_from_points(cbind("t" = knots, curve_data))[, -1])
-      })
-      coefs_discrete <- sapply(1:length(srv_data_discrete[[1]]), function(i){
-        response <- sapply(srv_data_discrete, '[[', i)
-        lm(response ~ -1 + x_model_matrix)$coefficients
-      })
-      coefs_list <- lapply(1:nrow(coefs_discrete), function(i){
-        coefs <- matrix(coefs_discrete[i,], ncol = ncol(data_curves[[1]]) -2)
-        colnames(coefs) <- colnames(srv_data[[1]][,-1])
-        coefs
-      })
+    model_data <- get_reg_model_data(data_curves_t_now, seq(0,1,0.01), x_model_matrix)
+    design_mat <- make_reg_design(model_data[, 1:ncol(x_model_matrix)], model_data$m_long,
+                                  knots = knots, type = type, closed = closed)
 
-    } else {
-      data_curves_t_now <- lapply(1:length(data_curves_t), function(i){
-        idx <- c(TRUE, diff(t_optims[[i]]) != 0)
-        data.frame("t" = t_optims[[i]][idx], data_curves_t[[i]][idx, -1])
-      })
+    coefs_long <- apply(model_data[,-(1:(ncol(x_model_matrix) + 1)), drop = FALSE], 2, function(q_m_x_long){
+      q_m_x_long[!is.finite(q_m_x_long)] <- NA
+      coef(lm(q_m_x_long ~ -1 + design_mat))
+    })
 
-      model_data <- get_reg_model_data(data_curves_t_now, seq(0,1,0.01), x_model_matrix)
-      design_mat <- make_reg_design(model_data[, 1:ncol(x_model_matrix)], model_data$m_long,
-                                    knots = knots, type = type, closed = closed)
+    n_coefs <- nrow(coefs_long)/ncol(x_model_matrix)
+    coefs_list <- lapply(1:ncol(x_model_matrix), function(i){
+      coefs <- coefs_long[n_coefs*(i - 1) + 1:n_coefs, ]
+      colnames(coefs) <- colnames(srv_data[[1]][,-1])
+      rownames(coefs) <- paste0("coef_", 1:n_coefs)
+      coefs
+    })
 
-      coefs_long <- apply(model_data[,-(1:(ncol(x_model_matrix) + 1)), drop = FALSE], 2, function(q_m_x_long){
-        q_m_x_long[!is.finite(q_m_x_long)] <- NA
-        coef(lm(q_m_x_long ~ -1 + design_mat))
-      })
-
-      n_coefs <- nrow(coefs_long)/ncol(x_model_matrix)
-      coefs_list <- lapply(1:ncol(x_model_matrix), function(i){
-        coefs <- coefs_long[n_coefs*(i - 1) + 1:n_coefs, ]
-        colnames(coefs) <- colnames(srv_data[[1]][,-1])
-        rownames(coefs) <- paste0("coef_", 1:n_coefs)
-        coefs
-      })
-    }
     names(coefs_list) <- paste0("beta_", 1:ncol(x_model_matrix) - 1)
 
     #stop if coefficients don't change much anymore
@@ -168,15 +184,15 @@ fit_elastic_regression <- function(formula, data_curves, x_data, knots = seq(0,1
                                 eps = 0.01)
       }
     })
-    # add optimal time parametrisation to data curves
-    for(i in 1:length(data_curves)){
-      warping <- data_curves[[i]][-nrow(data_curves[[i]]),1:2]
-      warping <- warping[order(warping$t_optim), ]
-      warping$t_optim <- t_optims[[i]][-length(t_optims[[i]])]
-      warping <- warping[order(warping$t), ]
-      data_curves[[i]][,1:2] <- rbind(warping, c(1, ifelse(warping[1,2] == 0, 1, warping[1,2])))
-      attr(data_curves[[i]], "dist_to_prediction") <- attributes(t_optims[[i]])$dist
-    }
+  }
+  # add optimal time parametrisation to data curves
+  for(i in 1:length(data_curves)){
+    warping <- data_curves[[i]][-nrow(data_curves[[i]]),1:2]
+    warping <- warping[order(warping$t_optim), ]
+    warping$t_optim <- t_optims[[i]][-length(t_optims[[i]])]
+    warping <- warping[order(warping$t), ]
+    data_curves[[i]][,1:2] <- rbind(warping, c(1, ifelse(warping[1,2] == 0, 1, warping[1,2])))
+    attr(data_curves[[i]], "dist_to_prediction") <- attributes(t_optims[[i]])$dist
   }
 
   elastic_reg_model <- list("coefs_list" = coefs_list, "formula" = formula,

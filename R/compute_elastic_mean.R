@@ -23,7 +23,6 @@
 #'   the optimal parametrization when the curve is aligned to the mean.}
 #'   \item{closed}{\code{TRUE} if the mean is supposed to be a closed curve.}
 #' @export
-#' @exportClass elastic_mean
 #' @importFrom splines splineDesign
 #' @examples
 #' curve <- function(t){

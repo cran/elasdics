@@ -12,7 +12,8 @@ fit_elastic_regression(
   type = "smooth",
   closed = FALSE,
   max_iter = 10,
-  eps = 0.001
+  eps = 0.001,
+  pre_align = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ if "polygon" the mean will be piecewise linear.}
 \item{max_iter}{maximal number of iterations}
 
 \item{eps}{the algorithm stops if L2 norm of coefficients changes less}
+
+\item{pre_align}{TRUE if curves should be pre aligned to the mean}
 }
 \value{
 an object of class \code{elastic_reg_model}, which is a \code{list}

@@ -7,6 +7,5 @@
 #' Align two observed curves: \code{\link{align_curves}} \cr
 #' Compute a mean for a set of observed curves: \code{\link{compute_elastic_mean}}
 #'
-#' @docType package
 #' @name elasdics
 NULL

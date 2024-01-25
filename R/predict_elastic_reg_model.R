@@ -20,6 +20,7 @@ predict.elastic_reg_model <- function(object, newdata = NULL, t_grid = seq(0,1, 
     x_data <- x_data[, all.vars(object$formula[[3]]), drop = FALSE]
   }
   x_data_old <- object$x_data[, all.vars(object$formula[[3]]), drop = FALSE]
+
   # create x model matrix
   if(ncol(x_data_old) == 0){
     x_design <- matrix(1)
@@ -49,6 +50,7 @@ predict.elastic_reg_model <- function(object, newdata = NULL, t_grid = seq(0,1, 
     if(object$closed){
       pred_data_curve <- project_curve_on_closed(pred_data_curve)
     }
+    names(pred_data_curve) <- colnames(pred_coefs)
 
     #compute translation
     offset <- apply(get_evals(cbind("t" = get_arc_length_param(pred_data_curve),
